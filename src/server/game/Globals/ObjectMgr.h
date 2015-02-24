@@ -1026,8 +1026,14 @@ class ObjectMgr
         CreatureBaseStats const* GetCreatureBaseStats(uint8 level, uint8 unitClass);
 
         void SetHighestGuids();
+
         template<HighGuid type>
-        ObjectGuidGenerator<type>* GetGenerator();
+        inline ObjectGuidGeneratorBase* GetGenerator()
+        {
+            //static_assert(ObjectGuidTraits<type>::Global || ObjectGuidTraits<type>::RealmSpecific, "Only global guid can be generated in ObjectMgr context");
+            return GetGuidSequenceGenerator<type>();
+        }
+
         uint32 GenerateAuctionID();
         uint64 GenerateEquipmentSetGuid();
         uint32 GenerateMailID();
@@ -1304,17 +1310,17 @@ class ObjectMgr
         uint64 _voidItemId;
 
         // first free low guid for selected guid type
-        ObjectGuidGenerator<HighGuid::Player> _playerGuidGenerator;
-        ObjectGuidGenerator<HighGuid::Creature> _creatureGuidGenerator;
-        ObjectGuidGenerator<HighGuid::Pet> _petGuidGenerator;
-        ObjectGuidGenerator<HighGuid::Vehicle> _vehicleGuidGenerator;
-        ObjectGuidGenerator<HighGuid::Item> _itemGuidGenerator;
-        ObjectGuidGenerator<HighGuid::GameObject> _gameObjectGuidGenerator;
-        ObjectGuidGenerator<HighGuid::DynamicObject> _dynamicObjectGuidGenerator;
-        ObjectGuidGenerator<HighGuid::Corpse> _corpseGuidGenerator;
-        ObjectGuidGenerator<HighGuid::LootObject> _lootObjectGuidGenerator;
-        ObjectGuidGenerator<HighGuid::AreaTrigger> _areaTriggerGuidGenerator;
-        ObjectGuidGenerator<HighGuid::Transport> _moTransportGuidGenerator;
+        template<HighGuid high>
+        inline ObjectGuidGeneratorBase* GetGuidSequenceGenerator()
+        {
+            auto itr = _guidGenerators.find(high);
+            if (itr == _guidGenerators.end())
+                itr = _guidGenerators.insert(std::make_pair(high, std::make_unique<ObjectGuidGenerator<high>>())).first;
+
+            return itr->second.get();
+        }
+
+        std::map<HighGuid, std::unique_ptr<ObjectGuidGeneratorBase>> _guidGenerators;
 
         QuestMap _questTemplates;
 

@@ -239,24 +239,6 @@ bool SpellClickInfo::IsFitToRequirements(Unit const* clicker, Unit const* clicke
     return true;
 }
 
-template<> ObjectGuidGenerator<HighGuid::Player>* ObjectMgr::GetGenerator() { return &_playerGuidGenerator; }
-template<> ObjectGuidGenerator<HighGuid::Creature>* ObjectMgr::GetGenerator() { return &_creatureGuidGenerator; }
-template<> ObjectGuidGenerator<HighGuid::Pet>* ObjectMgr::GetGenerator() { return &_petGuidGenerator; }
-template<> ObjectGuidGenerator<HighGuid::Vehicle>* ObjectMgr::GetGenerator() { return &_vehicleGuidGenerator; }
-template<> ObjectGuidGenerator<HighGuid::Item>* ObjectMgr::GetGenerator() { return &_itemGuidGenerator; }
-template<> ObjectGuidGenerator<HighGuid::GameObject>* ObjectMgr::GetGenerator() { return &_gameObjectGuidGenerator; }
-template<> ObjectGuidGenerator<HighGuid::DynamicObject>* ObjectMgr::GetGenerator() { return &_dynamicObjectGuidGenerator; }
-template<> ObjectGuidGenerator<HighGuid::Corpse>* ObjectMgr::GetGenerator() { return &_corpseGuidGenerator; }
-template<> ObjectGuidGenerator<HighGuid::LootObject>* ObjectMgr::GetGenerator() { return &_lootObjectGuidGenerator; }
-template<> ObjectGuidGenerator<HighGuid::AreaTrigger>* ObjectMgr::GetGenerator() { return &_areaTriggerGuidGenerator; }
-template<> ObjectGuidGenerator<HighGuid::Transport>* ObjectMgr::GetGenerator() { return &_moTransportGuidGenerator; }
-
-template<HighGuid type>
-ObjectGuidGenerator<type>* ObjectMgr::GetGenerator()
-{
-    return nullptr;
-}
-
 ObjectMgr::ObjectMgr():
     _auctionId(1),
     _equipmentSetGuid(1),
@@ -5962,29 +5944,29 @@ void ObjectMgr::SetHighestGuids()
 {
     QueryResult result = CharacterDatabase.Query("SELECT MAX(guid) FROM characters");
     if (result)
-        _playerGuidGenerator.Set((*result)[0].GetUInt64() + 1);
+        GetGuidSequenceGenerator<HighGuid::Player>()->Set((*result)[0].GetUInt64() + 1);
 
     result = WorldDatabase.Query("SELECT MAX(guid) FROM creature");
     if (result)
-        _creatureGuidGenerator.Set((*result)[0].GetUInt64() + 1);
+        GetGuidSequenceGenerator<HighGuid::Creature>()->Set((*result)[0].GetUInt64() + 1);
 
     result = CharacterDatabase.Query("SELECT MAX(guid) FROM item_instance");
     if (result)
-        _itemGuidGenerator.Set((*result)[0].GetUInt64() + 1);
+        GetGuidSequenceGenerator<HighGuid::Item>()->Set((*result)[0].GetUInt64() + 1);
 
     // Cleanup other tables from nonexistent guids ( >= _hiItemGuid)
-    CharacterDatabase.PExecute("DELETE FROM character_inventory WHERE item >= '%u'", _itemGuidGenerator.GetNextAfterMaxUsed());    // One-time query
-    CharacterDatabase.PExecute("DELETE FROM mail_items WHERE item_guid >= '%u'", _itemGuidGenerator.GetNextAfterMaxUsed());        // One-time query
-    CharacterDatabase.PExecute("DELETE FROM auctionhouse WHERE itemguid >= '%u'", _itemGuidGenerator.GetNextAfterMaxUsed());       // One-time query
-    CharacterDatabase.PExecute("DELETE FROM guild_bank_item WHERE item_guid >= '%u'", _itemGuidGenerator.GetNextAfterMaxUsed());   // One-time query
+    CharacterDatabase.PExecute("DELETE FROM character_inventory WHERE item >= '%u'", GetGuidSequenceGenerator<HighGuid::Item>()->GetNextAfterMaxUsed());    // One-time query
+    CharacterDatabase.PExecute("DELETE FROM mail_items WHERE item_guid >= '%u'", GetGuidSequenceGenerator<HighGuid::Item>()->GetNextAfterMaxUsed());        // One-time query
+    CharacterDatabase.PExecute("DELETE FROM auctionhouse WHERE itemguid >= '%u'", GetGuidSequenceGenerator<HighGuid::Item>()->GetNextAfterMaxUsed());       // One-time query
+    CharacterDatabase.PExecute("DELETE FROM guild_bank_item WHERE item_guid >= '%u'", GetGuidSequenceGenerator<HighGuid::Item>()->GetNextAfterMaxUsed());   // One-time query
 
     result = WorldDatabase.Query("SELECT MAX(guid) FROM gameobject");
     if (result)
-        _gameObjectGuidGenerator.Set((*result)[0].GetUInt64() + 1);
+        GetGuidSequenceGenerator<HighGuid::GameObject>()->Set((*result)[0].GetUInt64() + 1);
 
     result = WorldDatabase.Query("SELECT MAX(guid) FROM transports");
     if (result)
-        _moTransportGuidGenerator.Set((*result)[0].GetUInt64() + 1);
+        GetGuidSequenceGenerator<HighGuid::Transport>()->Set((*result)[0].GetUInt64() + 1);
 
     result = CharacterDatabase.Query("SELECT MAX(id) FROM auctionhouse");
     if (result)
@@ -5996,7 +5978,7 @@ void ObjectMgr::SetHighestGuids()
 
     result = CharacterDatabase.Query("SELECT MAX(corpseGuid) FROM corpse");
     if (result)
-        _corpseGuidGenerator.Set((*result)[0].GetUInt64() + 1);
+        GetGuidSequenceGenerator<HighGuid::Corpse>()->Set((*result)[0].GetUInt64() + 1);
 
     result = CharacterDatabase.Query("SELECT MAX(arenateamid) FROM arena_team");
     if (result)
