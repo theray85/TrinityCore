@@ -519,6 +519,13 @@ class Map : public GridRefManager<NGridType>
 
         void UpdateAreaDependentAuras();
 
+        template<HighGuid high>
+        inline ObjectGuid::LowType GenerateLowGuid()
+        {
+            static_assert(ObjectGuidTraits<high>::MapSpecific, "Only map specific guid can be generated in Map context");
+            return GetGuidSequenceGenerator<high>().Generate();
+        }
+
     private:
         void LoadMapAndVMap(int gx, int gy);
         void LoadVMap(int gx, int gy);
@@ -665,6 +672,18 @@ class Map : public GridRefManager<NGridType>
 
         ZoneDynamicInfoMap _zoneDynamicInfo;
         uint32 _defaultLight;
+
+        template<HighGuid high>
+        inline ObjectGuidGeneratorBase* GetGuidSequenceGenerator()
+        {
+            auto itr = _guidGenerators.find(high);
+            if (itr == _guidGenerators.end())
+                itr = _guidGenerators.insert(high, std::make_unique<ObjectGuidGenerator<high>>()).first;
+
+            return itr->second.get();
+        }
+
+        std::map<HighGuid, std::unique_ptr<ObjectGuidGeneratorBase>> _guidGenerators;
 };
 
 enum InstanceResetMethod

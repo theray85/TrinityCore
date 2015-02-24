@@ -383,8 +383,6 @@ public:
             HandleCounterOverflow(high);
         return _nextGuid++;
     }
-
-private:
 };
 
 ByteBuffer& operator<<(ByteBuffer& buf, ObjectGuid const& guid);
