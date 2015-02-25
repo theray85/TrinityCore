@@ -362,6 +362,8 @@ class PackedGuid
 class ObjectGuidGeneratorBase
 {
 public:
+    ObjectGuidGeneratorBase(ObjectGuid::LowType start = UI64LIT(1)) : _nextGuid(start) { }
+
     virtual void Set(uint64 val) { _nextGuid = val; }
     virtual ObjectGuid::LowType Generate() = 0;
     ObjectGuid::LowType GetNextAfterMaxUsed() const { return _nextGuid; }
@@ -375,7 +377,7 @@ template<HighGuid high>
 class ObjectGuidGenerator : public ObjectGuidGeneratorBase
 {
 public:
-    explicit ObjectGuidGenerator(ObjectGuid::LowType start = UI64LIT(1)) : _nextGuid(start) { }
+    explicit ObjectGuidGenerator(ObjectGuid::LowType start = UI64LIT(1)) : ObjectGuidGeneratorBase(start) { }
 
     ObjectGuid::LowType Generate() override
     {

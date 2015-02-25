@@ -864,7 +864,7 @@ bool GameObject::LoadGameObjectFromDB(ObjectGuid::LowType guid, Map* map, bool a
 
     m_DBTableGuid = guid;
     if (map->GetInstanceId() != 0)
-        guid = sObjectMgr->GetGenerator<HighGuid::GameObject>()->Generate();
+        guid = map->GenerateLowGuid<HighGuid::GameObject>();
 
     if (!Create(guid, entry, map, phaseMask, x, y, z, ang, rotation0, rotation1, rotation2, rotation3, animprogress, go_state, artKit))
         return false;

@@ -674,13 +674,13 @@ class Map : public GridRefManager<NGridType>
         uint32 _defaultLight;
 
         template<HighGuid high>
-        inline ObjectGuidGeneratorBase* GetGuidSequenceGenerator()
+        inline ObjectGuidGeneratorBase& GetGuidSequenceGenerator()
         {
             auto itr = _guidGenerators.find(high);
             if (itr == _guidGenerators.end())
-                itr = _guidGenerators.insert(high, std::make_unique<ObjectGuidGenerator<high>>()).first;
+                itr = _guidGenerators.insert(std::make_pair(high, std::make_unique<ObjectGuidGenerator<high>>())).first;
 
-            return itr->second.get();
+            return *itr->second;
         }
 
         std::map<HighGuid, std::unique_ptr<ObjectGuidGeneratorBase>> _guidGenerators;

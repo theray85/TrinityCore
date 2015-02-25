@@ -1237,7 +1237,7 @@ bool Creature::LoadCreatureFromDB(ObjectGuid::LowType guid, Map* map, bool addTo
             return false;
     }
     else
-        guid = sObjectMgr->GetGenerator<HighGuid::Creature>()->Generate();
+        guid = map->GenerateLowGuid<HighGuid::Creature>();
 
     if (!Create(guid, map, data->phaseMask, data->id, data->posX, data->posY, data->posZ, data->orientation, data))
         return false;
@@ -1288,7 +1288,7 @@ bool Creature::LoadCreatureFromDB(ObjectGuid::LowType guid, Map* map, bool addTo
 
     m_creatureData = data;
 
-    loot.SetGUID(ObjectGuid::Create<HighGuid::LootObject>(data->mapid, data->id, sObjectMgr->GetGenerator<HighGuid::LootObject>()->Generate()));
+    loot.SetGUID(ObjectGuid::Create<HighGuid::LootObject>(data->mapid, data->id, GetMap()->GenerateLowGuid<HighGuid::LootObject>()));
 
     if (addToMap && !GetMap()->AddToMap(this))
         return false;

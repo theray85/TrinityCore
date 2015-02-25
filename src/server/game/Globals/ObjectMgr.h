@@ -1028,9 +1028,9 @@ class ObjectMgr
         void SetHighestGuids();
 
         template<HighGuid type>
-        inline ObjectGuidGeneratorBase* GetGenerator()
+        inline ObjectGuidGeneratorBase& GetGenerator()
         {
-            //static_assert(ObjectGuidTraits<type>::Global || ObjectGuidTraits<type>::RealmSpecific, "Only global guid can be generated in ObjectMgr context");
+            static_assert(ObjectGuidTraits<type>::Global || ObjectGuidTraits<type>::RealmSpecific, "Only global guid can be generated in ObjectMgr context");
             return GetGuidSequenceGenerator<type>();
         }
 
@@ -1311,13 +1311,13 @@ class ObjectMgr
 
         // first free low guid for selected guid type
         template<HighGuid high>
-        inline ObjectGuidGeneratorBase* GetGuidSequenceGenerator()
+        inline ObjectGuidGeneratorBase& GetGuidSequenceGenerator()
         {
             auto itr = _guidGenerators.find(high);
             if (itr == _guidGenerators.end())
                 itr = _guidGenerators.insert(std::make_pair(high, std::make_unique<ObjectGuidGenerator<high>>())).first;
 
-            return itr->second.get();
+            return *itr->second;
         }
 
         std::map<HighGuid, std::unique_ptr<ObjectGuidGeneratorBase>> _guidGenerators;

@@ -176,7 +176,7 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petEntry, uint32 petnumber, bool c
     }
 
     Map* map = owner->GetMap();
-    if (!Create(sObjectMgr->GetGenerator<HighGuid::Pet>()->Generate(), map, owner->GetPhaseMask(), petEntry))
+    if (!Create(map->GenerateLowGuid<HighGuid::Pet>(), map, owner->GetPhaseMask(), petEntry))
         return false;
 
     for (auto itr : owner->GetPhases())
@@ -777,7 +777,7 @@ bool Pet::CreateBaseAtCreatureInfo(CreatureTemplate const* cinfo, Unit* owner)
 bool Pet::CreateBaseAtTamed(CreatureTemplate const* cinfo, Map* map, uint32 phaseMask)
 {
     TC_LOG_DEBUG("entities.pet", "Pet::CreateBaseForTamed");
-    if (!Create(sObjectMgr->GetGenerator<HighGuid::Pet>()->Generate(), map, phaseMask, cinfo->Entry))
+    if (!Create(map->GenerateLowGuid<HighGuid::Pet>(), map, phaseMask, cinfo->Entry))
         return false;
 
     setPowerType(POWER_FOCUS);
