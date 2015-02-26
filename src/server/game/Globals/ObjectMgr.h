@@ -36,12 +36,13 @@
 #include "ObjectAccessor.h"
 #include "ObjectDefines.h"
 #include "VehicleDefines.h"
+#include "ConditionMgr.h"
+#include "DB2Stores.h"
 #include <string>
 #include <map>
 #include <limits>
-#include "ConditionMgr.h"
 #include <functional>
-#include "DB2Stores.h"
+#include <memory>
 
 class Item;
 struct AccessRequirement;
@@ -1315,7 +1316,7 @@ class ObjectMgr
         {
             auto itr = _guidGenerators.find(high);
             if (itr == _guidGenerators.end())
-                itr = _guidGenerators.insert(std::make_pair(high, std::make_unique<ObjectGuidGenerator<high>>())).first;
+                itr = _guidGenerators.insert(std::make_pair(high, std::unique_ptr<ObjectGuidGenerator<high>>(new ObjectGuidGenerator<high>()))).first;
 
             return *itr->second;
         }
