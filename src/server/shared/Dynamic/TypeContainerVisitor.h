@@ -58,6 +58,29 @@ template<class VISITOR, class OBJECT_TYPES> void VisitorHelper(VISITOR &v, TypeM
     VisitorHelper(v, c.GetElements());
 }
 
+// TypeUnorderedMapContainer
+template<class VISITOR, class KEY_TYPE>
+void VisitorHelper(VISITOR& /*v*/, ContainerUnorderedMap<TypeNull, KEY_TYPE>& /*c*/) { }
+
+template<class VISITOR, class KEY_TYPE, class T>
+void VisitorHelper(VISITOR& v, ContainerUnorderedMap<T, KEY_TYPE>& c)
+{
+    v.Visit(c._element);
+}
+
+template<class VISITOR, class KEY_TYPE, class H, class T>
+void VisitorHelper(VISITOR& v, ContainerUnorderedMap<TypeList<H, T>, KEY_TYPE>& c)
+{
+    VisitorHelper(v, c._elements);
+    VisitorHelper(v, c._TailElements);
+}
+
+template<class VISITOR, class OBJECT_TYPES, class KEY_TYPE>
+void VisitorHelper(VISITOR& v, TypeUnorderedMapContainer<OBJECT_TYPES, KEY_TYPE>& c)
+{
+    VisitorHelper(v, c.GetElements());
+}
+
 template<class VISITOR, class TYPE_CONTAINER>
 class TypeContainerVisitor
 {

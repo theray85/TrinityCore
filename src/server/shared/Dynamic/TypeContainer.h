@@ -133,6 +133,9 @@ public:
         return Trinity::Find(_elements, handle, (SPECIFIC_TYPE*)NULL);
     }
 
+    ContainerUnorderedMap<OBJECT_TYPES, KEY_TYPE>& GetElements() { return _elements; }
+    ContainerUnorderedMap<OBJECT_TYPES, KEY_TYPE> const& GetElements() const { return _elements; }
+
 private:
     ContainerUnorderedMap<OBJECT_TYPES, KEY_TYPE> _elements;
 };
