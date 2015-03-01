@@ -181,20 +181,27 @@ class SmartScript
         void OnReset();
         void ResetBaseObject()
         {
-            if (!meOrigGUID.IsEmpty())
+            WorldObject* lookupRoot = me;
+            if (!lookupRoot)
+                lookupRoot = go;
+
+            if (lookupRoot)
             {
-                if (Creature* m = HashMapHolder<Creature>::Find(meOrigGUID))
+                if (!meOrigGUID.IsEmpty())
                 {
-                    me = m;
-                    go = NULL;
+                    if (Creature* m = ObjectAccessor::GetCreature(*lookupRoot, meOrigGUID))
+                    {
+                        me = m;
+                        go = NULL;
+                    }
                 }
-            }
-            if (!goOrigGUID.IsEmpty())
-            {
-                if (GameObject* o = HashMapHolder<GameObject>::Find(goOrigGUID))
+                if (!goOrigGUID.IsEmpty())
                 {
-                    me = NULL;
-                    go = o;
+                    if (GameObject* o = ObjectAccessor::GetGameObject(*lookupRoot, goOrigGUID))
+                    {
+                        me = NULL;
+                        go = o;
+                    }
                 }
             }
             goOrigGUID.Clear();

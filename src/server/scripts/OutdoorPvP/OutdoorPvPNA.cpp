@@ -15,6 +15,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "MapManager.h"
 #include "ScriptMgr.h"
 #include "OutdoorPvPNA.h"
 #include "Player.h"
@@ -43,6 +44,7 @@ void OutdoorPvPNA::HandleKillImpl(Player* player, Unit* killed)
 uint32 OPvPCapturePointNA::GetAliveGuardsCount()
 {
     uint32 cnt = 0;
+    Map* map = sMapMgr->FindMap(530, 0);
     for (std::map<uint32, ObjectGuid>::iterator itr = m_Creatures.begin(); itr != m_Creatures.end(); ++itr)
     {
         switch (itr->first)
@@ -62,7 +64,7 @@ uint32 OPvPCapturePointNA::GetAliveGuardsCount()
         case NA_NPC_GUARD_13:
         case NA_NPC_GUARD_14:
         case NA_NPC_GUARD_15:
-            if (Creature const* const cr = HashMapHolder<Creature>::Find(itr->second))
+            if (Creature* cr = map->GetCreature(itr->second))
                 if (cr->IsAlive())
                     ++cnt;
             break;
@@ -567,11 +569,9 @@ void OPvPCapturePointNA::ChangeState()
         break;
     }
 
-    GameObject* flag = HashMapHolder<GameObject>::Find(m_capturePointGUID);
+    GameObject* flag = sMapMgr->FindMap(530, 0)->GetGameObject(m_capturePointGUID);
     if (flag)
-    {
         flag->SetGoArtKit(artkit);
-    }
 
     UpdateHalaaWorldState();
 }

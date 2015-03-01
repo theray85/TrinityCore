@@ -414,7 +414,7 @@ Transport* TransportMgr::CreateTransport(uint32 entry, ObjectGuid::LowType guid 
         trans->m_zoneScript = map->ToInstanceMap()->GetInstanceScript();
 
     // Passengers will be loaded once a player is near
-
+    HashMapHolder<Transport>::Insert(trans);
     trans->GetMap()->AddToMap<Transport>(trans);
     return trans;
 }

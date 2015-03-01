@@ -3326,28 +3326,43 @@ void BattlegroundMap::RemoveAllPlayers()
                     player->TeleportTo(player->GetBattlegroundEntryPoint());
 }
 
-Creature* Map::GetCreature(ObjectGuid guid)
+AreaTrigger* Map::GetAreaTrigger(ObjectGuid const& guid)
 {
-    return ObjectAccessor::GetObjectInMap(guid, this, (Creature*)NULL);
+    return _objectsStore.Find<AreaTrigger>(guid);
 }
 
-GameObject* Map::GetGameObject(ObjectGuid guid)
+Corpse* Map::GetCorpse(ObjectGuid const& guid)
 {
-    return ObjectAccessor::GetObjectInMap(guid, this, (GameObject*)NULL);
+    return _objectsStore.Find<Corpse>(guid);
 }
 
-Transport* Map::GetTransport(ObjectGuid guid)
+Creature* Map::GetCreature(ObjectGuid const& guid)
+{
+    return _objectsStore.Find<Creature>(guid);
+}
+
+DynamicObject* Map::GetDynamicObject(ObjectGuid const& guid)
+{
+    return _objectsStore.Find<DynamicObject>(guid);
+}
+
+GameObject* Map::GetGameObject(ObjectGuid const& guid)
+{
+    return _objectsStore.Find<GameObject>(guid);
+}
+
+Pet* Map::GetPet(ObjectGuid const& guid)
+{
+    return _objectsStore.Find<Pet>(guid);
+}
+
+Transport* Map::GetTransport(ObjectGuid const& guid)
 {
     if (!guid.IsMOTransport())
         return NULL;
 
     GameObject* go = GetGameObject(guid);
     return go ? go->ToTransport() : NULL;
-}
-
-DynamicObject* Map::GetDynamicObject(ObjectGuid guid)
-{
-    return ObjectAccessor::GetObjectInMap(guid, this, (DynamicObject*)NULL);
 }
 
 void Map::UpdateIteratorBack(Player* player)

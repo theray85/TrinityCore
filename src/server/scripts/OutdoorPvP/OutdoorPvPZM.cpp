@@ -15,6 +15,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "MapManager.h"
 #include "ScriptMgr.h"
 #include "OutdoorPvPZM.h"
 #include "ObjectMgr.h"
@@ -312,9 +313,10 @@ bool OPvPCapturePointZM_GraveYard::CanTalkTo(Player* player, Creature* c, Gossip
 bool OPvPCapturePointZM_GraveYard::HandleGossipOption(Player* player, ObjectGuid guid, uint32 /*gossipid*/)
 {
     std::map<ObjectGuid, uint32>::iterator itr = m_CreatureTypes.find(guid);
+    Map* map = sMapMgr->FindMap(530, 0);
     if (itr != m_CreatureTypes.end())
     {
-        Creature* cr = HashMapHolder<Creature>::Find(guid);
+        Creature* cr = map->GetCreature(itr->first);
         if (!cr)
             return true;
         // if the flag is already taken, then return

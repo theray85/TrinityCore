@@ -16764,8 +16764,8 @@ bool Player::LoadFromDB(ObjectGuid guid, SQLQueryHolder *holder)
         ObjectGuid transGUID = ObjectGuid::Create<HighGuid::Transport>(transLowGUID);
 
         Transport* transport = NULL;
-        if (GameObject* go = HashMapHolder<GameObject>::Find(transGUID))
-            transport = go->ToTransport();
+        if (Transport* go = HashMapHolder<Transport>::Find(transGUID))
+            transport = go;
 
         if (transport)
         {

@@ -454,10 +454,15 @@ class Map : public GridRefManager<NGridType>
 
         TempSummon* SummonCreature(uint32 entry, Position const& pos, SummonPropertiesEntry const* properties = NULL, uint32 duration = 0, Unit* summoner = NULL, uint32 spellId = 0, uint32 vehId = 0);
         void SummonCreatureGroup(uint8 group, std::list<TempSummon*>* list = NULL);
-        Creature* GetCreature(ObjectGuid guid);
-        GameObject* GetGameObject(ObjectGuid guid);
-        Transport* GetTransport(ObjectGuid guid);
-        DynamicObject* GetDynamicObject(ObjectGuid guid);
+        AreaTrigger* GetAreaTrigger(ObjectGuid const& guid);
+        Corpse* GetCorpse(ObjectGuid const& guid);
+        Creature* GetCreature(ObjectGuid const& guid);
+        DynamicObject* GetDynamicObject(ObjectGuid const& guid);
+        GameObject* GetGameObject(ObjectGuid const& guid);
+        Pet* GetPet(ObjectGuid const& guid);
+        Transport* GetTransport(ObjectGuid const& guid);
+
+        MapStoredObjectTypesContainer& GetObjectsStore() { return _objectsStore; }
 
         MapInstanced* ToMapInstanced() { if (Instanceable()) return reinterpret_cast<MapInstanced*>(this); return NULL; }
         MapInstanced const* ToMapInstanced() const { if (Instanceable()) return reinterpret_cast<MapInstanced const*>(this); return NULL; }
@@ -685,6 +690,7 @@ class Map : public GridRefManager<NGridType>
         }
 
         std::map<HighGuid, std::unique_ptr<ObjectGuidGeneratorBase>> _guidGenerators;
+        MapStoredObjectTypesContainer _objectsStore;
 };
 
 enum InstanceResetMethod

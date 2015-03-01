@@ -3656,5 +3656,12 @@ void SmartScript::SetScript9(SmartScriptHolder& e, uint32 entry)
 
 Unit* SmartScript::GetLastInvoker()
 {
-    return ObjectAccessor::FindUnit(mLastInvoker);
+    WorldObject* lookupRoot = me;
+    if (!lookupRoot)
+        lookupRoot = go;
+
+    if (lookupRoot)
+        return ObjectAccessor::GetUnit(*lookupRoot, mLastInvoker);
+
+    return ObjectAccessor::FindPlayer(mLastInvoker);
 }
