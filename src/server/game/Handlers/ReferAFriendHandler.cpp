@@ -28,7 +28,7 @@ void WorldSession::HandleGrantLevel(WorldPacket& recvData)
     ObjectGuid guid;
     recvData >> guid.ReadAsPacked();
 
-    Player* target = ObjectAccessor::GetObjectInWorld(guid, _player);
+    Player* target = ObjectAccessor::GetPlayer(*_player, guid);
 
     // check cheating
     /* TODO: 6.x update lfg system

@@ -168,7 +168,7 @@ bool OPvPCapturePoint::DelCreature(uint32 type)
         return false;
     }
 
-    Creature* cr = HashMapHolder<Creature>::Find(m_Creatures[type]);
+    Creature* cr = m_PvP->GetMap()->GetCreature(m_Creatures[type]);
     if (!cr)
     {
         // can happen when closing the core
@@ -204,7 +204,7 @@ bool OPvPCapturePoint::DelObject(uint32 type)
     if (!m_Objects[type])
         return false;
 
-    GameObject* obj = HashMapHolder<GameObject>::Find(m_Objects[type]);
+    GameObject* obj = m_PvP->GetMap()->GetGameObject(m_Objects[type]);
     if (!obj)
     {
         m_Objects[type].Clear();
@@ -252,7 +252,7 @@ void OutdoorPvP::DeleteSpawns()
     m_capturePoints.clear();
 }
 
-OutdoorPvP::OutdoorPvP() : m_TypeId(0), m_sendUpdate(true) { }
+OutdoorPvP::OutdoorPvP() : m_TypeId(0), m_sendUpdate(true), m_map(nullptr) { }
 
 OutdoorPvP::~OutdoorPvP()
 {
@@ -652,4 +652,13 @@ void OutdoorPvP::BroadcastWorker(Worker& _worker, uint32 zoneId)
             if (Player* player = ObjectAccessor::FindPlayer(*itr))
                 if (player->GetZoneId() == zoneId)
                     _worker(player);
+}
+
+void OutdoorPvP::SetMapFromZone(uint32 zone)
+{
+    AreaTableEntry const* areaTable = GetAreaEntryByAreaID(zone);
+    ASSERT(areaTable);
+    Map* map = sMapMgr->CreateBaseMap(areaTable->MapID);
+    ASSERT(!map->Instanceable());
+    m_map = map;
 }

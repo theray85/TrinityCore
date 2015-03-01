@@ -186,6 +186,9 @@ void Creature::AddToWorld()
             GetZoneScript()->OnCreatureCreate(this);
 
         GetMap()->GetObjectsStore().Insert<Creature>(GetGUID(), this);
+        if (m_DBTableGuid)
+            GetMap()->GetCreatureBySpawnIdStore().insert(std::make_pair(m_DBTableGuid, this));
+
         Unit::AddToWorld();
         SearchFormation();
         AIM_Initialize();
@@ -205,6 +208,9 @@ void Creature::RemoveFromWorld()
             sFormationMgr->RemoveCreatureFromGroup(m_formation, this);
 
         Unit::RemoveFromWorld();
+
+        if (m_DBTableGuid)
+            Trinity::Containers::MultimapErasePair(GetMap()->GetCreatureBySpawnIdStore(), m_DBTableGuid, this);
         GetMap()->GetObjectsStore().Remove<Creature>(GetGUID());
     }
 }

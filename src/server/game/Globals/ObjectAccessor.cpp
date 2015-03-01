@@ -36,6 +36,7 @@
 #include "Opcodes.h"
 #include "Pet.h"
 #include "Player.h"
+#include "Transport.h"
 #include "Vehicle.h"
 #include "World.h"
 #include "WorldPacket.h"
@@ -436,3 +437,4 @@ template <class T> boost::shared_mutex HashMapHolder<T>::_lock;
 
 /// Global definitions for the hashmap storage
 template class HashMapHolder<Player>;
+template class HashMapHolder<Transport>;

@@ -152,6 +152,8 @@ bool OutdoorPvPZM::SetupOutdoorPvP()
     m_AllianceTowersControlled = 0;
     m_HordeTowersControlled = 0;
 
+    SetMapFromZone(OutdoorPvPZMBuffZones[0]);
+
     // add the zones affected by the pvp buff
     for (uint8 i = 0; i < OutdoorPvPZMBuffZonesNum; ++i)
         RegisterZone(OutdoorPvPZMBuffZones[i]);

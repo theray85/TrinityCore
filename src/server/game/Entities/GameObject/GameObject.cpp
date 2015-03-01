@@ -130,6 +130,8 @@ void GameObject::AddToWorld()
             m_zoneScript->OnGameObjectCreate(this);
 
         GetMap()->GetObjectsStore().Insert<GameObject>(GetGUID(), this);
+        if (m_DBTableGuid)
+            GetMap()->GetGameObjectBySpawnIdStore().insert(std::make_pair(m_DBTableGuid, this));
 
         // The state can be changed after GameObject::Create but before GameObject::AddToWorld
         bool toggledState = GetGoType() == GAMEOBJECT_TYPE_CHEST ? getLootState() == GO_READY : (GetGoState() == GO_STATE_READY || IsTransport());
@@ -160,6 +162,9 @@ void GameObject::RemoveFromWorld()
                 GetMap()->RemoveGameObjectModel(*m_model);
 
         WorldObject::RemoveFromWorld();
+
+        if (m_DBTableGuid)
+            Trinity::Containers::MultimapErasePair(GetMap()->GetGameObjectBySpawnIdStore(), m_DBTableGuid, this);
         GetMap()->GetObjectsStore().Remove<GameObject>(GetGUID());
     }
 }

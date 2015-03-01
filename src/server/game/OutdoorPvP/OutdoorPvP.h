@@ -261,6 +261,8 @@ class OutdoorPvP : public ZoneScript
 
         void SendDefenseMessage(uint32 zoneId, uint32 id);
 
+        Map* GetMap() const { return m_map; }
+
     protected:
 
         // the map of the objectives belonging to this outdoorpvp
@@ -294,6 +296,11 @@ class OutdoorPvP : public ZoneScript
 
         template<class Worker>
         void BroadcastWorker(Worker& _worker, uint32 zoneId);
+
+        // Hack to store map because this code is just shit
+        void SetMapFromZone(uint32 zone);
+
+        Map* m_map;
 };
 
 #endif /*OUTDOOR_PVP_H_*/
