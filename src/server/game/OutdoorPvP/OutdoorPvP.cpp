@@ -176,7 +176,7 @@ bool OPvPCapturePoint::DelCreature(uint32 type)
         return false;
     }
     TC_LOG_DEBUG("outdoorpvp", "deleting opvp creature type %u", type);
-    ObjectGuid::LowType guid = cr->GetDBTableGUIDLow();
+    ObjectGuid::LowType guid = cr->GetSpawnId();
     // Don't save respawn time
     cr->SetRespawnTime(0);
     cr->RemoveCorpse();
@@ -210,7 +210,7 @@ bool OPvPCapturePoint::DelObject(uint32 type)
         m_Objects[type].Clear();
         return false;
     }
-    ObjectGuid::LowType guid = obj->GetDBTableGUIDLow();
+    ObjectGuid::LowType guid = obj->GetSpawnId();
     obj->SetRespawnTime(0);                                 // not save respawn time
     obj->Delete();
     sObjectMgr->DeleteGOData(guid);

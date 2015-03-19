@@ -290,7 +290,7 @@ public:
 
         creature->SaveToDB(map->GetId(), (1 << map->GetSpawnMode()), chr->GetPhaseMask());
 
-        ObjectGuid::LowType db_guid = creature->GetDBTableGUIDLow();
+        ObjectGuid::LowType db_guid = creature->GetSpawnId();
 
         // To call _LoadGoods(); _LoadQuests(); CreateTrainerSpells()
         // current "creature" variable is deleted and created fresh new, otherwise old values might trigger asserts or cause undefined behavior
@@ -397,7 +397,7 @@ public:
         else
         {
             // obtain real GUID for DB operations
-            lowGuid = creature->GetDBTableGUIDLow();
+            lowGuid = creature->GetSpawnId();
         }
 
         int wait = waitStr ? atoi(waitStr) : 0;
@@ -740,7 +740,7 @@ public:
         std::string curRespawnDelayStr = secsToTimeString(uint64(curRespawnDelay), true);
         std::string defRespawnDelayStr = secsToTimeString(target->GetRespawnDelay(), true);
 
-        handler->PSendSysMessage(LANG_NPCINFO_CHAR,  target->GetDBTableGUIDLow(), target->GetGUID().ToString().c_str(), faction, npcflags, Entry, displayid, nativeid);
+        handler->PSendSysMessage(LANG_NPCINFO_CHAR,  target->GetSpawnId(), target->GetGUID().ToString().c_str(), faction, npcflags, Entry, displayid, nativeid);
         handler->PSendSysMessage(LANG_NPCINFO_LEVEL, target->getLevel());
         handler->PSendSysMessage(LANG_NPCINFO_EQUIPMENT, target->GetCurrentEquipmentId(), target->GetOriginalEquipmentId());
         handler->PSendSysMessage(LANG_NPCINFO_HEALTH, target->GetCreateHealth(), target->GetMaxHealth(), target->GetHealth());
@@ -865,12 +865,12 @@ public:
             }
             else
             {
-                lowguid = creature->GetDBTableGUIDLow();
+                lowguid = creature->GetSpawnId();
             }
         }
         else
         {
-            lowguid = creature->GetDBTableGUIDLow();
+            lowguid = creature->GetSpawnId();
         }
 
         float x = handler->GetSession()->GetPlayer()->GetPositionX();
@@ -880,7 +880,7 @@ public:
 
         if (creature)
         {
-            if (CreatureData const* data = sObjectMgr->GetCreatureData(creature->GetDBTableGUIDLow()))
+            if (CreatureData const* data = sObjectMgr->GetCreatureData(creature->GetSpawnId()))
             {
                 const_cast<CreatureData*>(data)->posX = x;
                 const_cast<CreatureData*>(data)->posY = y;
@@ -1024,7 +1024,7 @@ public:
             creature = handler->getSelectedCreature();
             if (!creature || creature->IsPet())
                 return false;
-            lowguid = creature->GetDBTableGUIDLow();
+            lowguid = creature->GetSpawnId();
         }
         else                                                    // case .setmovetype #creature_guid $move_type (with selected creature)
         {
@@ -1048,7 +1048,7 @@ public:
             }
             else
             {
-                lowguid = creature->GetDBTableGUIDLow();
+                lowguid = creature->GetSpawnId();
             }
         }
 
@@ -1145,7 +1145,7 @@ public:
         ObjectGuid::LowType guidLow = UI64LIT(0);
 
         if (creature)
-            guidLow = creature->GetDBTableGUIDLow();
+            guidLow = creature->GetSpawnId();
         else
             return false;
 
@@ -1194,7 +1194,7 @@ public:
         ObjectGuid::LowType guidLow = UI64LIT(0);
 
         if (creature)
-            guidLow = creature->GetDBTableGUIDLow();
+            guidLow = creature->GetSpawnId();
         else
             return false;
 
@@ -1458,14 +1458,14 @@ public:
         ObjectGuid::LowType leaderGUID = strtoull(args, nullptr, 10);
         Creature* creature = handler->getSelectedCreature();
 
-        if (!creature || !creature->GetDBTableGUIDLow())
+        if (!creature || !creature->GetSpawnId())
         {
             handler->SendSysMessage(LANG_SELECT_CREATURE);
             handler->SetSentErrorMessage(true);
             return false;
         }
 
-        ObjectGuid::LowType lowguid = creature->GetDBTableGUIDLow();
+        ObjectGuid::LowType lowguid = creature->GetSpawnId();
         if (creature->GetFormation())
         {
             handler->PSendSysMessage("Selected creature is already member of group " UI64FMTD, creature->GetFormation()->GetId());
@@ -1518,21 +1518,21 @@ public:
             return false;
         }
 
-        if (!creature->GetDBTableGUIDLow())
+        if (!creature->GetSpawnId())
         {
             handler->PSendSysMessage("Selected %s isn't in creature table", creature->GetGUID().ToString().c_str());
             handler->SetSentErrorMessage(true);
             return false;
         }
 
-        if (!sObjectMgr->SetCreatureLinkedRespawn(creature->GetDBTableGUIDLow(), linkguid))
+        if (!sObjectMgr->SetCreatureLinkedRespawn(creature->GetSpawnId(), linkguid))
         {
             handler->PSendSysMessage("Selected creature can't link with guid '" UI64FMTD "'", linkguid);
             handler->SetSentErrorMessage(true);
             return false;
         }
 
-        handler->PSendSysMessage("LinkGUID '" UI64FMTD "' added to creature with DBTableGUID: '" UI64FMTD "'", linkguid, creature->GetDBTableGUIDLow());
+        handler->PSendSysMessage("LinkGUID '" UI64FMTD "' added to creature with DBTableGUID: '" UI64FMTD "'", linkguid, creature->GetSpawnId());
         return true;
     }
 
