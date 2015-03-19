@@ -242,16 +242,13 @@ void OPvPCapturePointHP::ChangeState()
     }
 
     Map* map = sMapMgr->FindMap(530, 0);
-    GameObject* flag = map->GetGameObject(m_capturePointGUID);
-    GameObject* flag2 = map->GetGameObject(m_Objects[m_TowerType]);
-    if (flag)
-    {
-        flag->SetGoArtKit(artkit);
-    }
-    if (flag2)
-    {
-        flag2->SetGoArtKit(artkit2);
-    }
+    auto bounds = map->GetGameObjectBySpawnIdStore().equal_range(m_capturePointSpawnId);
+    for (auto itr = bounds.first; itr != bounds.second; ++itr)
+        itr->second->SetGoArtKit(artkit);
+
+    bounds = map->GetGameObjectBySpawnIdStore().equal_range(m_Objects[m_TowerType]);
+    for (auto itr = bounds.first; itr != bounds.second; ++itr)
+        itr->second->SetGoArtKit(artkit2);
 
     // send world state update
     if (field)

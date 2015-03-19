@@ -310,9 +310,9 @@ void OPvPCapturePointTF::ChangeState()
         break;
     }
 
-    GameObject* flag = sMapMgr->FindMap(530, 0)->GetGameObject(m_capturePointGUID);
-    if (flag)
-        flag->SetGoArtKit(artkit);
+    auto bounds = sMapMgr->FindMap(530, 0)->GetGameObjectBySpawnIdStore().equal_range(m_capturePointSpawnId);
+    for (auto itr = bounds.first; itr != bounds.second; ++itr)
+        itr->second->SetGoArtKit(artkit);
 
     UpdateTowerState();
 }

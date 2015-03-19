@@ -787,7 +787,7 @@ void GameObject::SaveToDB(uint32 mapid, uint32 spawnMask, uint32 phaseMask)
         return;
 
     if (!m_spawnId)
-        m_spawnId = GetGUID().GetCounter();
+        m_spawnId = sObjectMgr->GenerateGameObjectSpawnId();
 
     // update in loaded data (changing data only in this place)
     GameObjectData& data = sObjectMgr->NewGOData(m_spawnId);

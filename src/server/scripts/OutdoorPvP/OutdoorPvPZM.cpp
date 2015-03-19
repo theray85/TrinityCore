@@ -184,9 +184,9 @@ bool OPvPCapturePointZM_GraveYard::Update(uint32 /*diff*/)
     return retval;
 }
 
-int32 OPvPCapturePointZM_GraveYard::HandleOpenGo(Player* player, ObjectGuid guid)
+int32 OPvPCapturePointZM_GraveYard::HandleOpenGo(Player* player, GameObject* go)
 {
-    int32 retval = OPvPCapturePoint::HandleOpenGo(player, guid);
+    int32 retval = OPvPCapturePoint::HandleOpenGo(player, go);
     if (retval >= 0)
     {
         if (player->HasAura(ZM_BATTLE_STANDARD_A) && m_GraveYardState != ZM_GRAVEYARD_A)
@@ -300,8 +300,7 @@ void OPvPCapturePointZM_GraveYard::SetBeaconState(uint32 controlling_faction)
 
 bool OPvPCapturePointZM_GraveYard::CanTalkTo(Player* player, Creature* c, GossipMenuItems const& /*gso*/)
 {
-    ObjectGuid guid = c->GetGUID();
-    std::map<ObjectGuid, uint32>::iterator itr = m_CreatureTypes.find(guid);
+    std::map<ObjectGuid::LowType, uint32>::iterator itr = m_CreatureTypes.find(c->GetSpawnId());
     if (itr != m_CreatureTypes.end())
     {
         if (itr->second == ZM_ALLIANCE_FIELD_SCOUT && player->GetTeam() == ALLIANCE && m_BothControllingFaction == ALLIANCE && !m_FlagCarrierGUID && m_GraveYardState != ZM_GRAVEYARD_A)
@@ -312,26 +311,22 @@ bool OPvPCapturePointZM_GraveYard::CanTalkTo(Player* player, Creature* c, Gossip
     return false;
 }
 
-bool OPvPCapturePointZM_GraveYard::HandleGossipOption(Player* player, ObjectGuid guid, uint32 /*gossipid*/)
+bool OPvPCapturePointZM_GraveYard::HandleGossipOption(Player* player, Creature* creature, uint32 /*gossipid*/)
 {
-    std::map<ObjectGuid, uint32>::iterator itr = m_CreatureTypes.find(guid);
-    Map* map = sMapMgr->FindMap(530, 0);
+    std::map<ObjectGuid::LowType, uint32>::iterator itr = m_CreatureTypes.find(creature->GetSpawnId());
     if (itr != m_CreatureTypes.end())
     {
-        Creature* cr = map->GetCreature(itr->first);
-        if (!cr)
-            return true;
         // if the flag is already taken, then return
         if (!m_FlagCarrierGUID.IsEmpty())
             return true;
         if (itr->second == ZM_ALLIANCE_FIELD_SCOUT)
         {
-            cr->CastSpell(player, ZM_BATTLE_STANDARD_A, true);
+            creature->CastSpell(player, ZM_BATTLE_STANDARD_A, true);
             m_FlagCarrierGUID = player->GetGUID();
         }
         else if (itr->second == ZM_HORDE_FIELD_SCOUT)
         {
-            cr->CastSpell(player, ZM_BATTLE_STANDARD_H, true);
+            creature->CastSpell(player, ZM_BATTLE_STANDARD_H, true);
             m_FlagCarrierGUID = player->GetGUID();
         }
         UpdateTowerState();
