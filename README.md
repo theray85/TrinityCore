@@ -35,6 +35,7 @@ website at [TrinityCore.org](http://www.trinitycore.org).
 + OpenSSL ≥ 1.0.0
 + GCC ≥ 4.7.2 (Linux only)
 + MS Visual Studio ≥ 12 (2013 Update 3) (Windows only)
++ MS Visual Studio Express ≥ 12 (2013 Update 4) (Windows only)
 
 
 ## Install
